@@ -4,7 +4,7 @@
 
 ## Install
 
-`pip install your_project_name`
+`pip install git+https://github.com/wragge/trove_newspaper_images.git`
 
 ## Use as a library
 
@@ -24,3 +24,9 @@ Just call `trove_newspaper_images.download` from the command line with an articl
 ```shell
 trove_newspaper_images.download 107024751 --output_dir images
 ```
+
+See the [documentation](https://wragge.github.io/trove_newspaper_images/) for more information.
+
+----
+
+Created by [Tim Sherratt](https://timsherratt.org) ([@wragge](https://twitter.com/wragge)) for the [GLAM Workbench](https://glam-workbench.net/).
