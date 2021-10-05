@@ -14,7 +14,7 @@ See the [documentation](https://wragge.github.io/trove_newspaper_images/) for mo
 
 ## Install
 
-`pip install git+https://github.com/wragge/trove_newspaper_images.git`
+`pip install trove-newspaper-images`
 
 ## Download articles as images
 
