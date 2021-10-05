@@ -2,6 +2,16 @@
 > Tools for downloading images from Trove's digitised newspapers and gazettes.
 
 
+## Background and alternatives
+
+There's no reliable way of downloading an image of a Trove newspaper article from the web interface. The image download option produces an HTML page with embedded images, and the article is often sliced into pieces to fit the page.
+
+This package includes tools to download articles as complete JPEG images. If an article is printed across multiple newspaper pages, multiple images will be downloaded – one for each page. It's intended for integration into other tools and processing workflows, or for people who like working on the command line.
+
+If you just want to quickly download an article as an image without installing anything, you can [use this web app](https://glam-workbench.net/trove-newspapers/#save-a-trove-newspaper-article-as-an-image) in the GLAM Workbench. To download images of all articles returned by a search in Trove, you can also use the [Trove Newspaper and Gazette Harvester](https://glam-workbench.net/trove-harvester/).
+
+See the [documentation](https://wragge.github.io/trove_newspaper_images/) for more information.
+
 ## Install
 
 `pip install git+https://github.com/wragge/trove_newspaper_images.git`
