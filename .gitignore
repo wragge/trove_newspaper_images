@@ -144,7 +144,7 @@ checklink/cookies.txt
 images
 images_test
 images-test
-*.jpg_docs/
-sidebar.yml
+*.jpg
 _docs/
 sidebar.yml
+_proc/

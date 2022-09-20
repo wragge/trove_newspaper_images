@@ -1,9 +1,0 @@
-project:
-  output-dir: _docs
-
-website:
-  title: "trove_newspaper_images"
-  site-url: "https://wragge.github.io/trove_newspaper_images/"
-  description: "Tool to download Trove newspaper articles as images."
-  repo-branch: master
-  repo-url: "https://github.com/wragge/trove_newspaper_images/tree/master/"
