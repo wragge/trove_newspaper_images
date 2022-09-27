@@ -117,39 +117,42 @@ def download_images(article_id, output_dir="", size=None):
     * a list of image file names
     """
     images = []
+    if output_dir:
+        output_path = Path(output_dir)
+        output_path.mkdir(exist_ok=True, parents=True)
+    else:
+        output_path = ""
+    
     # Get position of article on the page(s)
     boxes = get_article_boxes(article_id)
     for box in boxes:
-
-        # Construct the url we need to download the full page image
-        page_url = f'https://trove.nla.gov.au/ndp/imageservice/nla.news-page{box["page_id"]}/level7'
-
-        # Download the page image
-        response = requests.get(page_url)
-
-        # Open download as an image for editing
-        img = Image.open(BytesIO(response.content))
-
-        # Use coordinates of the bounding box to crop article
-        points = (box["left"], box["top"], box["right"], box["bottom"])
-
-        # Crop image to article box
-        cropped = img.crop(points)
-
-        # Resize if necessary
-        if size:
-            cropped.thumbnail((size, size), Image.LANCZOS)
-
-        # Save cropped image
-        if output_dir:
-            output_path = Path(output_dir)
-            output_path.mkdir(exist_ok=True, parents=True)
-        else:
-            output_path = ""
         cropped_file = Path(
             output_path, f'nla.news-article{article_id}-{box["page_id"]}.jpg'
         )
-        cropped.save(cropped_file)
+        if not cropped_file.exists():
+            # Construct the url we need to download the full page image
+            page_url = f'https://trove.nla.gov.au/ndp/imageservice/nla.news-page{box["page_id"]}/level7'
+
+            # Download the page image
+            response = requests.get(page_url)
+
+            # Open download as an image for editing
+            img = Image.open(BytesIO(response.content))
+
+            # Use coordinates of the bounding box to crop article
+            points = (box["left"], box["top"], box["right"], box["bottom"])
+
+            # Crop image to article box
+            cropped = img.crop(points)
+
+            # Resize if necessary
+            if size:
+                cropped.thumbnail((size, size), Image.LANCZOS)
+
+            # Save cropped image
+            
+
+            cropped.save(cropped_file)
         images.append(cropped_file.name)
     # print(f'Downloaded: {images}')
     return images
