@@ -29,21 +29,30 @@ def get_box(zones):
     page_id = zones[0]["data-page-id"]
 
     # Loop through zones to find the outer boundaries of the article
+    z_boxes = []
     for zone in zones:
-        if int(zone["data-y"]) < top:
-            top = int(zone["data-y"])
-        if int(zone["data-x"]) < left:
-            left = int(zone["data-x"])
-        if (int(zone["data-x"]) + int(zone["data-w"])) > right:
-            right = int(zone["data-x"]) + int(zone["data-w"])
-        if (int(zone["data-y"]) + int(zone["data-h"])) > bottom:
-            bottom = int(zone["data-y"]) + int(zone["data-h"])
+        z_left = int(zone["data-x"])
+        z_top = int(zone["data-y"])
+        z_right = int(zone["data-x"]) + int(zone["data-w"])
+        z_bottom = int(zone["data-y"]) + int(zone["data-h"])
+        z_boxes.append(
+            {"left": z_left, "top": z_top, "right": z_right, "bottom": z_bottom}
+        )
+        if z_top < top:
+            top = z_top
+        if z_left < left:
+            left = z_left
+        if z_right > right:
+            right = z_right
+        if z_bottom > bottom:
+            bottom = z_bottom
     return {
         "page_id": page_id,
         "left": left,
         "top": top,
         "right": right,
         "bottom": bottom,
+        "zones": z_boxes,
     }
 
 
@@ -102,7 +111,7 @@ def get_article_boxes(article_id):
     return boxes
 
 
-def download_images(article_id, output_dir="", size=None):
+def download_images(article_id, output_dir="", size=None, masked=False):
     """
     Extract an image of a newspaper article from the page image(s), download and save it, and return the image filename(s).
 
@@ -111,6 +120,7 @@ def download_images(article_id, output_dir="", size=None):
     * article_id -- identifier for a Trove newspaper article
     * output_dir -- a directory to save images in (will be created if it doesn't exist)
     * size -- maximum dimensions of image
+    * masked -- `True` or `False`, remove content that isn't part of the article
 
     Returns:
 
@@ -122,7 +132,7 @@ def download_images(article_id, output_dir="", size=None):
         output_path.mkdir(exist_ok=True, parents=True)
     else:
         output_path = ""
-    
+
     # Get position of article on the page(s)
     boxes = get_article_boxes(article_id)
     for box in boxes:
@@ -134,7 +144,7 @@ def download_images(article_id, output_dir="", size=None):
             page_url = f'https://trove.nla.gov.au/ndp/imageservice/nla.news-page{box["page_id"]}/level7'
 
             # Download the page image
-            response = requests.get(page_url)
+            response = requests.get(page_url, stream=True)
 
             # Open download as an image for editing
             img = Image.open(BytesIO(response.content))
@@ -142,16 +152,41 @@ def download_images(article_id, output_dir="", size=None):
             # Use coordinates of the bounding box to crop article
             points = (box["left"], box["top"], box["right"], box["bottom"])
 
-            # Crop image to article box
-            cropped = img.crop(points)
+            if masked:
+
+                # Create a new empty image the same size as the original
+                new_img = Image.new("RGB", img.size, "#fdfdfd")
+
+                # Process each zone separately
+                for zone in box["zones"]:
+                    
+                    # Get zone coords
+                    z_points = (
+                        zone["left"],
+                        zone["top"],
+                        zone["right"],
+                        zone["bottom"],
+                    )
+
+                    # Crop the zone from the original image
+                    zone_crop = img.crop(z_points)
+
+                    # Paste the zone into the new image
+                    new_img.paste(zone_crop, z_points)
+
+                # Crop the new image to the article box
+                cropped = new_img.crop(points)
+
+            else:
+
+                # Crop image to article box
+                cropped = img.crop(points)
 
             # Resize if necessary
             if size:
                 cropped.thumbnail((size, size), Image.LANCZOS)
 
             # Save cropped image
-            
-
             cropped.save(cropped_file)
         images.append(cropped_file.name)
     # print(f'Downloaded: {images}')
@@ -166,5 +201,6 @@ def main():
     parser.add_argument("article_id", help="article identifier")
     parser.add_argument("--output_dir", help="directory to save images")
     parser.add_argument("--size", help="maximum image dimensions")
+    parser.add_argument('--masked', action="store_true", help="mask image")
     args = parser.parse_args()
-    download_images(args.article_id, args.output_dir, args.size)
+    download_images(args.article_id, args.output_dir, args.size, args.masked)
