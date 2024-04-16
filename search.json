@@ -1,0 +1,82 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "trove-newspaper-images",
+    "section": "",
+    "text": "There’s no reliable way of downloading an image of a Trove newspaper article from the web interface. The image download option produces an HTML page with embedded images, and the article is often sliced into pieces to fit the page.\nThis package includes tools to download articles as complete JPEG images. If an article is printed across multiple newspaper pages, multiple images will be downloaded – one for each page. It’s intended for integration into other tools and processing workflows, or for people who like working on the command line.\nIf you just want to quickly download an article as an image without installing anything, you can use this web app in the GLAM Workbench. To download images of all articles returned by a search in Trove, you can also use the Trove Newspaper and Gazette Harvester.\nSee the documentation for more information.",
+    "crumbs": [
+      "trove-newspaper-images"
+    ]
+  },
+  {
+    "objectID": "index.html#background-and-alternatives",
+    "href": "index.html#background-and-alternatives",
+    "title": "trove-newspaper-images",
+    "section": "",
+    "text": "There’s no reliable way of downloading an image of a Trove newspaper article from the web interface. The image download option produces an HTML page with embedded images, and the article is often sliced into pieces to fit the page.\nThis package includes tools to download articles as complete JPEG images. If an article is printed across multiple newspaper pages, multiple images will be downloaded – one for each page. It’s intended for integration into other tools and processing workflows, or for people who like working on the command line.\nIf you just want to quickly download an article as an image without installing anything, you can use this web app in the GLAM Workbench. To download images of all articles returned by a search in Trove, you can also use the Trove Newspaper and Gazette Harvester.\nSee the documentation for more information.",
+    "crumbs": [
+      "trove-newspaper-images"
+    ]
+  },
+  {
+    "objectID": "index.html#install",
+    "href": "index.html#install",
+    "title": "trove-newspaper-images",
+    "section": "Install",
+    "text": "Install\npip install trove-newspaper-images",
+    "crumbs": [
+      "trove-newspaper-images"
+    ]
+  },
+  {
+    "objectID": "index.html#download-articles-as-images",
+    "href": "index.html#download-articles-as-images",
+    "title": "trove-newspaper-images",
+    "section": "Download articles as images",
+    "text": "Download articles as images\n\nUse as a library\n\nfrom trove_newspaper_images.articles import download_images\n\nimages = download_images('107024751')\nimages\n\n['nla.news-article107024751-11565831.jpg']\n\n\n\n\nUse from the command line\nJust call trove_newspaper_images.download from the command line with an article identifier. You can use the --output_dir parameter to specify a directory for the downloaded images. For example:\ntrove_newspaper_images.download 107024751 --output_dir images\nAdd the --masked parameter to try and remove content from neighbouring articles.\ntrove_newspaper_images.download 107024751 --masked\n\nCreated by Tim Sherratt (@wragge) for the GLAM Workbench.",
+    "crumbs": [
+      "trove-newspaper-images"
+    ]
+  },
+  {
+    "objectID": "articles.html",
+    "href": "articles.html",
+    "title": "articles",
+    "section": "",
+    "text": "source\n\n\n\n main ()\n\nCLI configuration\n\nsource\n\n\n\n\n download_images (article_id, output_dir='', size=None, masked=False)\n\nExtract an image of a newspaper article from the page image(s), download and save it, and return the image filename(s).\nParameters:\n\narticle_id – identifier for a Trove newspaper article\noutput_dir – a directory to save images in (will be created if it doesn’t exist)\nsize – maximum dimensions of image\nmasked – True or False, remove content that isn’t part of the article\n\nReturns:\n\na list of image file names\n\n\nsource\n\n\n\n\n get_article_boxes (article_id)\n\nGet a list of boundary boxes for an article, each box representing the position of an article on a page.\nPositional information about the article is attached to each line of the OCR output in data attributes.\nThis function loads the HTML version of the article and scrapes the x, y, and width values for each line of text to determine the coordinates of a box around the article.\n\nsource\n\n\n\n\n get_box (zones)\n\nLoop through all the zones to find the outer limits of each boundary. Return a bounding box around the article.",
+    "crumbs": [
+      "articles"
+    ]
+  },
+  {
+    "objectID": "articles.html#functions",
+    "href": "articles.html#functions",
+    "title": "articles",
+    "section": "",
+    "text": "source\n\n\n\n main ()\n\nCLI configuration\n\nsource\n\n\n\n\n download_images (article_id, output_dir='', size=None, masked=False)\n\nExtract an image of a newspaper article from the page image(s), download and save it, and return the image filename(s).\nParameters:\n\narticle_id – identifier for a Trove newspaper article\noutput_dir – a directory to save images in (will be created if it doesn’t exist)\nsize – maximum dimensions of image\nmasked – True or False, remove content that isn’t part of the article\n\nReturns:\n\na list of image file names\n\n\nsource\n\n\n\n\n get_article_boxes (article_id)\n\nGet a list of boundary boxes for an article, each box representing the position of an article on a page.\nPositional information about the article is attached to each line of the OCR output in data attributes.\nThis function loads the HTML version of the article and scrapes the x, y, and width values for each line of text to determine the coordinates of a box around the article.\n\nsource\n\n\n\n\n get_box (zones)\n\nLoop through all the zones to find the outer limits of each boundary. Return a bounding box around the article.",
+    "crumbs": [
+      "articles"
+    ]
+  },
+  {
+    "objectID": "articles.html#basic-usage",
+    "href": "articles.html#basic-usage",
+    "title": "articles",
+    "section": "Basic usage",
+    "text": "Basic usage\nJust give the download_images function a Trove article identifier. It downloads and saves the images, and returns a list of image file names. If an article is split across multiple pages, you’ll get multiple images!\n\nimages = download_images(\"107024751\")\n\nThe image files names have the form\nnla.news-article[article id]-[page id].jpg.\nFor example:\nnla.news-article107024751-11565831.jpg.\nThis means you can always track back from the image to find out where it came from.\nThe download_images function returns a list of the image file names. We can use this to preview the downloaded articles, or to run some additional processing steps.\n\ndisplayImage(images[0], width=300)\n\n\n\n\n\n\n\n\nBy default, images are saved in the current directory. To change this, you can include the output_dir parameter to specify the directory where you want the images saved. If the directory doesn’t exist, it will be created.\n\nimages = download_images(\"107024751\", output_dir=\"images\")\n\nNot all articles fit neatly in bounding boxes. If the article spans multiple, uneven columns, your image might contain content from neighbouring articles. By setting masked to True you can try to remove the irrelevant content.\nCompare these two images of the same article. The first is unmasked, and includes a lot of extra content. The second is created by setting masked=True and only includes the desired article.\n\nimages = download_images(\"255909273\", output_dir=\"unmasked\")\ndisplayImage(Path(\"unmasked\", images[0]), width=300)\n\n\n\n\n\n\n\n\n\nimages = download_images(\"255909273\", output_dir=\"masked\", masked=True)\ndisplayImage(Path(\"masked\", images[0]), width=300)\n\n\n\n\n\n\n\n\nThe accuracy of the mask depends on the way the boundaries of the article have been identified in Trove. Sometimes an article will be grouped with a neighbouring illustration, even though they’re not connected.",
+    "crumbs": [
+      "articles"
+    ]
+  },
+  {
+    "objectID": "articles.html#tests",
+    "href": "articles.html#tests",
+    "title": "articles",
+    "section": "Tests",
+    "text": "Tests\nThe get_article_boxes function resturns a list of bounding boxes defining the position of an article on a page.\n\nboxes = get_article_boxes(\"107024751\")\nboxes\n\n[{'page_id': '11565831',\n  'left': 1062,\n  'top': 1406,\n  'right': 1775,\n  'bottom': 1949,\n  'zones': [{'left': 1062, 'top': 1406, 'right': 1775, 'bottom': 1467},\n   {'left': 1062, 'top': 1469, 'right': 1775, 'bottom': 1949}]}]\n\n\nThis article is printed on one page only, so get_article_boxes should return a list containing a single box.\n\nassert len(boxes) == 1\n\nEach box includes a page_id value, providing the identifier of the page on which the article is printed.\n\nassert \"page_id\" in boxes[0]\n\nThe bounding box has left, right, top, and bottom values. We’d expect left to be less that right.\n\nassert boxes[0][\"left\"] &lt; boxes[0][\"right\"]\n\nLet’s try an article that is split across multiple pages.\n\nboxes = get_article_boxes(\"162833980\")\n\nThere should be two boxes.\n\nassert len(boxes) == 2\n\nThe download_images function downloads the images and returns a list of image names.\n\nimages = download_images(\"107024751\")\nimages\n\n['nla.news-article107024751-11565831.jpg']\n\n\nThere should be a single image file name in the images list.\n\nassert len(images) == 1\n\nThe image file names should include the article id.\n\nassert \"107024751\" in images[0]\n\nLet’s check that the image has been downloaded and saved.\n\nassert Path(images[0]).exists()\n\n# Delete the image\nPath(images[0]).unlink()\n\nLet’s use the output_dir parameter to save the image to a specified directory.\n\nimages = download_images(\"107024751\", output_dir=\"images-test\")\n\nLet’s make sure the image has been saved to the directory.\n\nassert Path(\"images-test\", images[0]).exists()\n\nLet’s download an article split across multiple pages.\n\nimages = download_images(\"162833980\")\n\n\nassert len(images) &gt; 1\n\nAnd check that all the images have been downloaded.\n\nfor img in images:\n    assert Path(img).exists()\n\n# Delete downloaded images\nfor img in images:\n    Path(img).unlink()\n\n\n# Clean up after tests\nshutil.rmtree(Path(\"images\"))\nshutil.rmtree(Path(\"images-test\"))\nshutil.rmtree(Path(\"masked\"))\nshutil.rmtree(Path(\"unmasked\"))",
+    "crumbs": [
+      "articles"
+    ]
+  }
+]
